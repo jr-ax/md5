@@ -1,5 +1,7 @@
 USING System.Strings;
 
+/// MD5 Hashing Class
+/// Implements the MD5 hashing algorithm to generate a 128-bit hash.
 CLASS md5
     VAR 
         A, B, C, D : DWORD;     // MD5 buffer registers (128-bit state divided into 4 DWORDs)
@@ -38,6 +40,7 @@ CLASS md5
         ];  
     END_VAR
 
+    /// Hashes the input string using the MD5 algorithm and returns the hash as a hexadecimal string.
     METHOD PUBLIC Hash
         VAR_INPUT
             InputString : STRING; // The original input string to be hashed
@@ -68,6 +71,7 @@ CLASS md5
         HashOutput := CONCAT(CONCAT(CONCAT(this.ConvertToHex(A), this.ConvertToHex(B)), this.ConvertToHex(C)), this.ConvertToHex(D));
     END_METHOD
 
+    /// Pads the input string to ensure it fits into 512-bit blocks as required by MD5.
     METHOD PRIVATE PadInputString
         VAR_TEMP
             i : INT;
@@ -103,6 +107,7 @@ CLASS md5
         PaddedInput[PaddedLength + 4] := TO_CHAR(TO_BYTE(SHR(BitLength, UINT#24) AND DWORD#16#FF));
     END_METHOD
 
+    /// Loads a 512-bit block of the padded input string into the message array (M).
     METHOD PRIVATE LoadBlock
         VAR_INPUT
             StartIndex : INT;
@@ -119,6 +124,7 @@ CLASS md5
         END_FOR;
     END_METHOD
 
+    /// Processes a single 512-bit block using the MD5 transformation algorithm.
     METHOD PRIVATE ProcessBlock
         VAR
             i : INT;
@@ -158,42 +164,7 @@ CLASS md5
         D := TO_DWORD(TO_DINT(D) + TO_DINT(DD));
     END_METHOD
 
-    // METHOD PRIVATE RotateLeft : DWORD
-    //     VAR_INPUT
-    //         Value : DWORD;
-    //         Shift : USINT;
-    //     END_VAR
-    //     RotateLeft := SHL(Value, Shift) OR SHR(Value, USINT#32 - Shift);
-    // END_METHOD
-
-    METHOD PRIVATE F : DWORD
-        VAR_INPUT
-            X, Y, Z : DWORD;
-        END_VAR
-        F := (X AND Y) OR (NOT X AND Z);
-    END_METHOD
-
-    METHOD PRIVATE G : DWORD
-        VAR_INPUT
-            X, Y, Z : DWORD;
-        END_VAR
-        G := (X AND Z) OR (Y AND NOT Z);
-    END_METHOD
-
-    METHOD PRIVATE H : DWORD
-        VAR_INPUT
-            X, Y, Z : DWORD;
-        END_VAR
-        H := X XOR Y XOR Z;
-    END_METHOD
-
-    METHOD PRIVATE I : DWORD
-        VAR_INPUT
-            X, Y, Z : DWORD;
-        END_VAR
-        I := Y XOR (X OR NOT Z);
-    END_METHOD
-
+    /// Converts a DWORD value to an 8-character hexadecimal string.
     METHOD PRIVATE ConvertToHex : STRING
         VAR_INPUT
             Value : DWORD;
@@ -223,37 +194,37 @@ CLASS md5
         END_FOR;
         
         ConvertToHex := HexStr;  (* Return the final hex string *)
+    END_METHOD
 
-        // VAR_INPUT
-        //     Value : DWORD;
-        // END_VAR
-        // VAR
-        //     HexChars : STRING := '0123456789ABCDEF';
-        //     HexStr : STRING := '';
-        //     ByteVal : BYTE;
-        //     i : INT;
-        // END_VAR
-        
-        // FOR i := 3 TO 0 BY -1 DO  (* Process each byte in DWORD (big-endian order) *)
-        //     ByteVal := TO_BYTE(SHR(Value, TO_UINT(i * 8)) AND DWORD#16#FF);  (* Extract each byte (8 bits) *)
-        //     HexStr := CONCAT(HexStr, MID(HexChars, SHR(ByteVal, 4) + 1, 1)); (* High nibble *)
-        //     HexStr := CONCAT(HexStr, MID(HexChars, (ByteVal AND 16#F) + 1, 1)); (* Low nibble *)
-        // END_FOR;
-        
-        // ConvertToHex := HexStr; (* Return final 8-character hex string *)
+    /// Performs the MD5 auxiliary function F(X, Y, Z) = (X AND Y) OR (NOT X AND Z).
+    METHOD PRIVATE F : DWORD
+        VAR_INPUT
+            X, Y, Z : DWORD;
+        END_VAR
+        F := (X AND Y) OR (NOT X AND Z);
+    END_METHOD
 
-            // VAR_INPUT
-            //     Value : DWORD;
-            // END_VAR
-            // VAR
-            //     HexStr : STRING := '';
-            //     Shift : INT;
-            // END_VAR
-            
-            // FOR Shift := 28 TO 0 BY -4 DO
-            //     HexStr := CONCAT(HexStr, ToString(SHR(Value, TO_UINT(Shift)) AND DWORD#16#F));
-            // END_FOR;
-            
-            // ConvertToHex := HexStr;
+    /// Performs the MD5 auxiliary function G(X, Y, Z) = (X AND Z) OR (Y AND NOT Z).
+    METHOD PRIVATE G : DWORD
+        VAR_INPUT
+            X, Y, Z : DWORD;
+        END_VAR
+        G := (X AND Z) OR (Y AND NOT Z);
+    END_METHOD
+
+    /// Performs the MD5 auxiliary function H(X, Y, Z) = X XOR Y XOR Z.
+    METHOD PRIVATE H : DWORD
+        VAR_INPUT
+            X, Y, Z : DWORD;
+        END_VAR
+        H := X XOR Y XOR Z;
+    END_METHOD
+
+    /// Performs the MD5 auxiliary function I(X, Y, Z) = Y XOR (X OR NOT Z).
+    METHOD PRIVATE I : DWORD
+        VAR_INPUT
+            X, Y, Z : DWORD;
+        END_VAR
+        I := Y XOR (X OR NOT Z);
     END_METHOD
 END_CLASS
