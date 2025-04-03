@@ -1,40 +1,44 @@
 USING System.Strings;
 
-CLASS MD5_Hasher
-    VAR
-        InputString : STRING; (* Input string to hash *)
-        HashOutput : STRING; (* MD5 Hash result *)
-        A, B, C, D : DWORD;
-        AA, BB, CC, DD : DWORD;
-        M : ARRAY[0..15] OF DWORD;
-        PaddedInput : STRING; (* Holds the padded input *)
-        InputLength, PaddedLength : INT;
-        BitLength : DWORD;
-
-        MD5_T : ARRAY [0..63] OF DWORD := [
-        DWORD#16#d76aa478, DWORD#16#e8c7b756, DWORD#16#242070db, DWORD#16#c1bdceee,
-        DWORD#16#f57c0faf, DWORD#16#4787c62a, DWORD#16#a8304613, DWORD#16#fd469501,
-        DWORD#16#698098d8, DWORD#16#8b44f7af, DWORD#16#ffff5bb1, DWORD#16#895cd7be,
-        DWORD#16#6b901122, DWORD#16#fd987193, DWORD#16#a679438e, DWORD#16#49b40821,
-        DWORD#16#f61e2562, DWORD#16#c040b340, DWORD#16#265e5a51, DWORD#16#e9b6c7aa,
-        DWORD#16#d62f105d, DWORD#16#02441453, DWORD#16#d8a1e681, DWORD#16#e7d3fbc8,
-        DWORD#16#21e1cde6, DWORD#16#c33707d6, DWORD#16#f4d50d87, DWORD#16#455a14ed,
-        DWORD#16#a9e3e905, DWORD#16#fcefa3f8, DWORD#16#676f02d9, DWORD#16#8d2a4c8a,
-        DWORD#16#fffa3942, DWORD#16#8771f681, DWORD#16#6d9d6122, DWORD#16#fde5380c,
-        DWORD#16#a4beea44, DWORD#16#4bdecfa9, DWORD#16#f6bb4b60, DWORD#16#bebfbc70,
-        DWORD#16#289b7ec6, DWORD#16#eaa127fa, DWORD#16#d4ef3085, DWORD#16#04881d05,
-        DWORD#16#d9d4d039, DWORD#16#e6db99e5, DWORD#16#1fa27cf8, DWORD#16#c4ac5665,
-        DWORD#16#f4292244, DWORD#16#432aff97, DWORD#16#ab9423a7, DWORD#16#fc93a039,
-        DWORD#16#655b59c3, DWORD#16#8f0ccc92, DWORD#16#ffeff47d, DWORD#16#85845dd1,
-        DWORD#16#6fa87e4f, DWORD#16#fe2ce6e0, DWORD#16#a3014314, DWORD#16#4e0811a1,
-        DWORD#16#f7537e82, DWORD#16#bd3af235, DWORD#16#2ad7d2bb, DWORD#16#eb86d391];
-
-        MD5_S : ARRAY[0..63] OF INT := [
+CLASS md5
+    VAR 
+        InputString : STRING;  // The original input string to be hashed
+        HashOutput : STRING;   // The final MD5 hash output as a hexadecimal string
+    
+        A, B, C, D : DWORD;     // MD5 buffer registers (128-bit state divided into 4 DWORDs)
+        AA, BB, CC, DD : DWORD; // Temporary variables used to store intermediate values during processing
+    
+        M : ARRAY[0..15] OF DWORD;  // Array to store the 512-bit message block split into 16 DWORDs
+    
+        PaddedInput : STRING;               // Input string after padding to fit into 512-bit blocks
+        InputLength, PaddedLength : INT;    // Input string length and padded length
+        BitLength : DWORD;                  // Input length in bits (needed for MD5 padding)
+    
+        MD5_T : ARRAY [0..63] OF DWORD := [  // MD5 predefined constants (T-table)
+            DWORD#16#d76aa478, DWORD#16#e8c7b756, DWORD#16#242070db, DWORD#16#c1bdceee,
+            DWORD#16#f57c0faf, DWORD#16#4787c62a, DWORD#16#a8304613, DWORD#16#fd469501,
+            DWORD#16#698098d8, DWORD#16#8b44f7af, DWORD#16#ffff5bb1, DWORD#16#895cd7be,
+            DWORD#16#6b901122, DWORD#16#fd987193, DWORD#16#a679438e, DWORD#16#49b40821,
+            DWORD#16#f61e2562, DWORD#16#c040b340, DWORD#16#265e5a51, DWORD#16#e9b6c7aa,
+            DWORD#16#d62f105d, DWORD#16#02441453, DWORD#16#d8a1e681, DWORD#16#e7d3fbc8,
+            DWORD#16#21e1cde6, DWORD#16#c33707d6, DWORD#16#f4d50d87, DWORD#16#455a14ed,
+            DWORD#16#a9e3e905, DWORD#16#fcefa3f8, DWORD#16#676f02d9, DWORD#16#8d2a4c8a,
+            DWORD#16#fffa3942, DWORD#16#8771f681, DWORD#16#6d9d6122, DWORD#16#fde5380c,
+            DWORD#16#a4beea44, DWORD#16#4bdecfa9, DWORD#16#f6bb4b60, DWORD#16#bebfbc70,
+            DWORD#16#289b7ec6, DWORD#16#eaa127fa, DWORD#16#d4ef3085, DWORD#16#04881d05,
+            DWORD#16#d9d4d039, DWORD#16#e6db99e5, DWORD#16#1fa27cf8, DWORD#16#c4ac5665,
+            DWORD#16#f4292244, DWORD#16#432aff97, DWORD#16#ab9423a7, DWORD#16#fc93a039,
+            DWORD#16#655b59c3, DWORD#16#8f0ccc92, DWORD#16#ffeff47d, DWORD#16#85845dd1,
+            DWORD#16#6fa87e4f, DWORD#16#fe2ce6e0, DWORD#16#a3014314, DWORD#16#4e0811a1,
+            DWORD#16#f7537e82, DWORD#16#bd3af235, DWORD#16#2ad7d2bb, DWORD#16#eb86d391
+        ];  
+    
+        MD5_S : ARRAY[0..63] OF INT := [  // MD5 predefined shift amounts for bitwise operations
             7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
             5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
             4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
             6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
-        ];
+        ];  
     END_VAR
 
     METHOD PUBLIC Hash : Int

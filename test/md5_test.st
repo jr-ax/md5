@@ -1,11 +1,11 @@
 USING System.Strings;
 
-NAMESPACE md5
+NAMESPACE hash
 
     {TestFixture}
     CLASS MyTestFixture
         VAR PUBLIC
-            md5 : MD5_Hasher;
+            md5 : md5;
             res : STRING;
             exp : STRING := '598d4c200461b81522a3328565c25f7c';
             exp1 : STRING := 'b10a8db164e0754105b7a99be72e3fe5';

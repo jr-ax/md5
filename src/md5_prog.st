@@ -1,8 +1,8 @@
-USING md5;
+USING hash;
 
 PROGRAM md5TestProg
     VAR
-        md5 : MD5_Hasher;
+        md5 : md5;
         in1 : STRING;
         out1 : STRING;
     END_VAR
