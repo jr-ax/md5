@@ -2,9 +2,6 @@ USING System.Strings;
 
 CLASS md5
     VAR 
-        InputString : STRING;  // The original input string to be hashed
-        HashOutput : STRING;   // The final MD5 hash output as a hexadecimal string
-    
         A, B, C, D : DWORD;     // MD5 buffer registers (128-bit state divided into 4 DWORDs)
         AA, BB, CC, DD : DWORD; // Temporary variables used to store intermediate values during processing
     
@@ -41,22 +38,13 @@ CLASS md5
         ];  
     END_VAR
 
-    METHOD PUBLIC Hash : Int
+    METHOD PUBLIC Hash
         VAR_INPUT
-            InpString : STRING; (* Input string to hash *)
+            InputString : STRING; // The original input string to be hashed
         END_VAR
         VAR_OUTPUT
-            HashOutp : STRING; (* MD5 Hash result *)
+            HashOutput : STRING; // The final MD5 hash output as a hexadecimal string
         END_VAR
-        
-        InputString := InpString;
-        
-        this.HashMD5();
-
-        HashOutp := HashOutput;
-    END_METHOD
-
-    METHOD HashMD5
         VAR_TEMP
             i : INT;
         END_VAR
@@ -68,7 +56,7 @@ CLASS md5
         D := DWORD#16#10325476;
 
         (* Step 2: Pad the input string *)
-        this.PadInputString();
+        this.PadInputString(InputString);
 
         (* Step 3: Process the input in 512-bit blocks *)
         FOR i := 0 TO LengthOf(PaddedInput) - 1 BY 64 DO
@@ -84,16 +72,20 @@ CLASS md5
         VAR_TEMP
             i : INT;
         END_VAR
+        VAR_INPUT
+            inpString : STRING;
+        END_VAR
+        
         
         (* Compute the padding needed *)
-        InputLength := LengthOf(InputString);
+        InputLength := LengthOf(inpString);
         PaddedLength := TO_INT(TO_DWORD(InputLength + 8) AND DWORD#16#FFFFFFC0) + 56;
         IF PaddedLength < (InputLength + 1) THEN
             PaddedLength := PaddedLength + 64;
         END_IF;
 
         (* Copy original input *)
-        PaddedInput := InputString;
+        PaddedInput := inpString;
 
         (* Append '1' bit (0x80 in hex) *)
         PaddedInput[InputLength + 1] := CHAR#16#80;

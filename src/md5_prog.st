@@ -1,5 +1,3 @@
-USING hash;
-
 PROGRAM md5TestProg
     VAR
         md5 : md5;
@@ -11,7 +9,7 @@ PROGRAM md5TestProg
         outStr : STRING;
     END_VAR
     
-    md5.Hash(InpString := inStr, HashOutp => outStr);
+    md5.Hash(InputString := inStr, HashOutput => outStr);
     in1 := inStr;
     out1 := outStr;
 
