@@ -52,54 +52,53 @@ CLASS md5
             i : INT;
         END_VAR
         
-        (* Step 1: Initialize MD5 buffer *)
+        // Step 1: Initialize MD5 buffer
         A := DWORD#16#67452301;
         B := DWORD#16#EFCDAB89;
         C := DWORD#16#98BADCFE;
         D := DWORD#16#10325476;
 
-        (* Step 2: Pad the input string *)
+        // Step 2: Pad the input string
         this.PadInputString(InputString);
 
-        (* Step 3: Process the input in 512-bit blocks *)
+        // Step 3: Process the input in 512-bit blocks
         FOR i := 0 TO LengthOf(PaddedInput) - 1 BY 64 DO
             this.LoadBlock(i);
             this.ProcessBlock();
         END_FOR;
 
-        (* Step 4: Convert to hexadecimal string *)
+        // Step 4: Convert to hexadecimal string
         HashOutput := CONCAT(CONCAT(CONCAT(this.ConvertToHex(A), this.ConvertToHex(B)), this.ConvertToHex(C)), this.ConvertToHex(D));
     END_METHOD
 
     /// Pads the input string to ensure it fits into 512-bit blocks as required by MD5.
     METHOD PRIVATE PadInputString
-        VAR_TEMP
-            i : INT;
-        END_VAR
         VAR_INPUT
             inpString : STRING;
         END_VAR
+        VAR_TEMP
+            i : INT;
+        END_VAR
         
-        
-        (* Compute the padding needed *)
+        // Compute the padding needed
         InputLength := LengthOf(inpString);
         PaddedLength := TO_INT(TO_DWORD(InputLength + 8) AND DWORD#16#FFFFFFC0) + 56;
         IF PaddedLength < (InputLength + 1) THEN
             PaddedLength := PaddedLength + 64;
         END_IF;
 
-        (* Copy original input *)
+        // Copy original input
         PaddedInput := inpString;
 
-        (* Append '1' bit (0x80 in hex) *)
+        // Append '1' bit (0x80 in hex)
         PaddedInput[InputLength + 1] := CHAR#16#80;
 
-        (* Append '0' bits until 56 bytes (448 bits) *)
+        // Append '0' bits until 56 bytes (448 bits)
         FOR i := InputLength + 2 TO PaddedLength DO
             PaddedInput[i] := CHAR#16#00;
         END_FOR;
 
-        (* Append original message length in bits (little-endian) *)
+        // Append original message length in bits (little-endian)
         BitLength := TO_DWORD(InputLength * 8);
         PaddedInput[PaddedLength + 1] := TO_CHAR(TO_BYTE(BitLength AND DWORD#16#FF));
         PaddedInput[PaddedLength + 2] := TO_CHAR(TO_BYTE(SHR(BitLength, UINT#8) AND DWORD#16#FF));
@@ -130,34 +129,38 @@ CLASS md5
             i : INT;
             Temp : DWORD;
         END_VAR
-        (* Copy initial values *)
-        AA := A; BB := B; CC := C; DD := D;
+        
+        // Copy initial values
+        AA := A;
+        BB := B;
+        CC := C;
+        DD := D;
 
-        (* Perform MD5 main loop *)
+        // Perform MD5 main loop
         FOR i := 0 TO 63 DO
             IF i < 16 THEN
-                (* Round 1 *)
+                // Round 1
                 A := TO_DWORD(TO_DINT(B) + TO_DINT(ROL(TO_DWORD(TO_DINT(A) + TO_DINT(this.F(B, C, D)) + TO_DINT(M[i MOD 16]) + TO_DINT(MD5_T[i])), TO_UINT(MD5_S[i]))));
             ELSIF i < 32 THEN
-                (* Round 2 *)
+                // Round 2
                 A := TO_DWORD(TO_DINT(B) + TO_DINT(ROL(TO_DWORD(TO_DINT(A) + TO_DINT(this.G(B, C, D)) + TO_DINT(M[(5 * i + 1) MOD 16]) + TO_DINT(MD5_T[i])), TO_UINT(MD5_S[i]))));
             ELSIF i < 48 THEN
-                (* Round 3 *)
+                // Round 3
                 A := TO_DWORD(TO_DINT(B) + TO_DINT(ROL(TO_DWORD(TO_DINT(A) + TO_DINT(this.H(B, C, D)) + TO_DINT(M[(3 * i + 5) MOD 16]) + TO_DINT(MD5_T[i])), TO_UINT(MD5_S[i]))));
             ELSE
-                (* Round 4 *)
+                // Round 4
                 A := TO_DWORD(TO_DINT(B) + TO_DINT(ROL(TO_DWORD(TO_DINT(A) + TO_DINT(this.I(B, C, D)) + TO_DINT(M[(7 * i) MOD 16]) + TO_DINT(MD5_T[i])), TO_UINT(MD5_S[i]))));
             END_IF;
 
-            (* Perform the rotation manually *)
+            // Perform the rotation
             Temp := A;
             A := D;
             D := C;
             C := B;
-            B := Temp;  (* Assign the old A value to B *)
+            B := Temp;
         END_FOR;
 
-        (* Add transformed values to hash buffer *)
+        // Add transformed values to hash buffer
         A := TO_DWORD(TO_DINT(A) + TO_DINT(AA));
         B := TO_DWORD(TO_DINT(B) + TO_DINT(BB));
         C := TO_DWORD(TO_DINT(C) + TO_DINT(CC));
@@ -167,33 +170,38 @@ CLASS md5
     /// Converts a DWORD value to an 8-character hexadecimal string.
     METHOD PRIVATE ConvertToHex : STRING
         VAR_INPUT
-            Value : DWORD;
+            Value : DWORD;  // The DWORD value to be converted to a hex string
         END_VAR
         VAR
-            Val : DWORD;
-            HexChars : STRING := '0123456789abcdef';
-            HexStr : STRING := '';
-            ByteVal : BYTE;
-            i : INT;
-            HighNibble : INT;
-            LowNibble : INT;
+            Val : DWORD;  // Variable to store byte-swapped DWORD
+            HexChars : STRING := '0123456789abcdef';  // Hexadecimal character lookup table
+            HexStr : STRING := '';  // Stores the final hex string result
+            ByteVal : BYTE;  // Stores extracted byte from DWORD
+            i : INT;  // Loop counter for byte processing
+            HighNibble : INT;  // Upper 4 bits of the byte (nibble)
+            LowNibble : INT;  // Lower 4 bits of the byte (nibble)
         END_VAR
 
-        Val := (SHL(Value AND DWORD#16#000000FF, UINT#24)) OR (SHL(Value AND DWORD#16#0000FF00, UINT#8)) OR (SHR(Value AND DWORD#16#00FF0000, UINT#8)) OR (SHR(Value AND DWORD#16#FF000000, UINT#24));
+        // Reverse byte order to match expected MD5 output format
+        Val := (SHL(Value AND DWORD#16#000000FF, UINT#24)) OR 
+                (SHL(Value AND DWORD#16#0000FF00, UINT#8)) OR 
+                (SHR(Value AND DWORD#16#00FF0000, UINT#8)) OR 
+                (SHR(Value AND DWORD#16#FF000000, UINT#24));
         
-        FOR i := 3 TO 0 BY -1 DO  (* Process each byte in DWORD *)
-            ByteVal := TO_BYTE(SHR(Val, TO_UINT(i * 8)) AND DWORD#16#FF);  (* Extract each byte *)
+        // Convert each byte in the DWORD to hexadecimal
+        FOR i := 3 TO 0 BY -1 DO  // Process each byte in DWORD from most to least significant
+            ByteVal := TO_BYTE(SHR(Val, TO_UINT(i * 8)) AND DWORD#16#FF);  // Extract each byte
             
-            (* Manually extract hex characters *)
-            HighNibble := TO_INT(SHR(ByteVal, UINT#4) AND DWORD#16#F);  (* Upper 4 bits *)
-            LowNibble := TO_INT(ByteVal AND BYTE#16#F);  (* Lower 4 bits *)
+            // Extract hex characters from lookup table
+            HighNibble := TO_INT(SHR(ByteVal, UINT#4) AND DWORD#16#F);  // Upper 4 bits
+            LowNibble := TO_INT(ByteVal AND BYTE#16#F);  // Lower 4 bits
         
-            (* Use Substring to extract hex characters *)
+            // Append corresponding hex characters to result string
             HexStr := Concat(HexStr, Substring(HexChars, HighNibble + 1, 1));
             HexStr := Concat(HexStr, Substring(HexChars, LowNibble + 1, 1));
         END_FOR;
         
-        ConvertToHex := HexStr;  (* Return the final hex string *)
+        ConvertToHex := HexStr;  // Return the final hex string
     END_METHOD
 
     /// Performs the MD5 auxiliary function F(X, Y, Z) = (X AND Y) OR (NOT X AND Z).
