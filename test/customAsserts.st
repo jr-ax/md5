@@ -21,7 +21,7 @@ NAMESPACE AxUnit.myAssert
         IF actual = expected THEN
             axunit_Succeed();
         ELSE
-            ret := System.Strings.CONCAT(inp ,': act: ', actual);
+            ret := System.Strings.Concat(inp ,': act: ', actual);
             axunit_Fail(ret, file, line);
         END_IF;
 

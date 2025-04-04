@@ -1,5 +1,7 @@
 USING System.Strings;
 
+NAMESPACE hash
+
 /// MD5 Hashing Class
 /// Implements the MD5 hashing algorithm to generate a 128-bit hash.
 CLASS md5
@@ -68,7 +70,7 @@ CLASS md5
         END_FOR;
 
         // Step 4: Convert to hexadecimal string
-        HashOutput := CONCAT(CONCAT(CONCAT(this.ConvertToHex(A), this.ConvertToHex(B)), this.ConvertToHex(C)), this.ConvertToHex(D));
+        HashOutput := Concat(Concat(Concat(this.ConvertToHex(A), this.ConvertToHex(B)), this.ConvertToHex(C)), this.ConvertToHex(D));
     END_METHOD
 
     /// Pads the input string to ensure it fits into 512-bit blocks as required by MD5.
@@ -236,3 +238,5 @@ CLASS md5
         I := Y XOR (X OR NOT Z);
     END_METHOD
 END_CLASS
+
+END_NAMESPACE

@@ -1,7 +1,7 @@
 # General information
-name: "md5"
-version: 0.0.1
-type: app
+name: "@jr-ax/md5"
+version: 1.0.0
+type: lib
 keywords:
   - library
 author: <Name>
@@ -23,6 +23,10 @@ dependencies:
 catalogs:
   "@ax/simatic-ax": ^2411.2.0
 
+repository:
+  type: git
+  url: https://github.com/jr-ax/md5
+
 # Environment variables
 variables:
   APAX_BUILD_ARGS:
@@ -31,9 +35,10 @@ variables:
 
 # Files, which will be shipped with the library
 files:
-  - bin
+  - src
 
 scripts:
-  b+d:
-  - apax build
-  - apax sld load -t 192.168.0.12 -i "bin/1500" --accept-security-disclaimer --restart
+  publish-package:
+    - apax pack
+    - apax publish --package *.apax.tgz --registry 'https://npm.pkg.github.com/'
+    - rm *.apax.tgz
