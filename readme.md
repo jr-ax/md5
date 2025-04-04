@@ -1,23 +1,31 @@
-# MD5 Hashing Implementation in PLC
+# MD5 Hashing
 
 ## Overview
-This project implements the MD5 hashing algorithm in a PLC-compatible structured text language. The implementation follows the standard MD5 algorithm, processing input strings into 128-bit hash values.
-
-## Features
-- Implements the complete MD5 algorithm
-- Supports hashing of arbitrary-length input strings
-- Produces a 128-bit hash output in hexadecimal format
-- Designed for use in PLC environments with limited string operations
+This library implements the MD5 hashing algorithm in a PLC-compatible structured text language for Siemens S7-1500 PLCs. The implementation follows the standard MD5 algorithm, processing input strings into 128-bit hash values.
 
 ## Usage
-1. Call `Hash(InputString)` with the string to be hashed.
-2. The function returns a 32-character hexadecimal MD5 hash.
+1. Call `Hash(InputString := InputText, HashOutput => HashedValue)` with the `inputText` as string to be hashed.
+2. The function returns a 32-character hexadecimal MD5 hash and writes it to `HashedValue`.
+
+```iec-st
+VAR
+    InputText : STRING := 'P@ssw0rd!';  // Example input string
+    HashedValue : STRING;               // Variable to hold the hashed output
+END_VAR
+
+// Call the Hash method to compute the MD5 hash
+Hash(InputString := InputText, HashOutput => HashedValue);
+```
 
 ## Limitations
-- Only supports standard string operations available in PLC environments.
-- No built-in error handling for extremely large inputs.
+- No built-in error handling
+- Maximum number of characters to be used in an input string: 247
+- Only usable with standard ASCII strings - no complete unicode support (see disclaimer)
 
-## ⚠️ PLC Compatibility Disclaimer
+## ⚠️ Disclaimer
+
+The code has been tested with unit tests (see test folder) for various cases, but it must be used at your own risk. While functionality has been verified, unforeseen issues or limitations may arise in different configurations, software versions, or for different input strings. It is strongly recommended that the code be thoroughly tested in your own system before being used in production to ensure proper behavior. Any potential issues arising from its use are not the responsibility of the author.
+
 
 When working with strings or passwords that contain special characters such as **`$`**, **`\`** or Unicode characters (e.g., **`é`**, **`ü`**, **non-Latin scripts**, or **emoji**), be aware that PLCs may not handle these characters correctly due to parsing or string handling limitations. In particular:
 
