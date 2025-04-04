@@ -1,13 +1,14 @@
 {
-  "name": "md5",
-  "version": "0.0.1",
+  "name": "@jr-ax/md5",
+  "version": "1.0.0",
   "lockFileVersion": "2",
   "installStrategy": "strict",
   "root": {
-    "name": "md5",
-    "version": "0.0.1",
+    "name": "@jr-ax/md5",
+    "version": "1.0.0",
     "dependencies": {
-      "@ax/system-strings": "8.0.8"
+      "@ax/system-strings": "8.0.8",
+      "@ax/ax2tia": "10.0.8"
     },
     "devDependencies": {
       "@ax/sdk": "2411.2.0"
@@ -56,6 +57,19 @@
         "@ax/system-math": "^8.0.8",
         "@ax/system-datetime": "^8.0.8",
         "@ax/system-conversion": "^8.0.8"
+      }
+    },
+    "@ax/ax2tia": {
+      "name": "@ax/ax2tia",
+      "version": "10.0.8",
+      "integrity": "sha512-A/xDMTMlDS907jBYsoEulxkTYAeRPFpo7u3OXHcrgCgK/0Dx4Kz5OolYbo615TdZwICXiNWWxTQ4THHNojIGhQ==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/ax2tia/-/ax2tia-10.0.8.tgz",
+      "cpu": [
+        "x64"
+      ],
+      "dependencies": {
+        "@ax/ax2tia-docs": "10.0.8",
+        "@ax/ax2tia-stc-plugin": "10.0.8"
       }
     },
     "@ax/apax-build": {
@@ -281,6 +295,20 @@
       "version": "8.0.8",
       "integrity": "sha512-p+FFvfnC9tLIb0hWXyx6PeJB7bkTGfi2NDfS9qnJkoKDsxAGxEzXmBuOH8zPHMD4A9wIUGbjwS0zaNxCs4nSeA==",
       "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-conversion/-/system-conversion-8.0.8.tgz",
+      "dependencies": {}
+    },
+    "@ax/ax2tia-docs": {
+      "name": "@ax/ax2tia-docs",
+      "version": "10.0.8",
+      "integrity": "sha512-6KHr9atbKn24xp6NOvmyqKPnQUleBqTUgxdWjrtSN0XTScFbW1cHKf9O1yAYqd7gtvt9dKvMKXtKzo9yxbPywA==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/ax2tia-docs/-/ax2tia-docs-10.0.8.tgz",
+      "dependencies": {}
+    },
+    "@ax/ax2tia-stc-plugin": {
+      "name": "@ax/ax2tia-stc-plugin",
+      "version": "10.0.8",
+      "integrity": "sha512-QkjnCQ7qn1SSDtwiEZfdi/zTAv6+f/4tqLVAsRsrjuGwYv6omLxugKqYY+DpdLCapB8Kc66nZfHldatPEEDnfg==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/ax2tia-stc-plugin/-/ax2tia-stc-plugin-10.0.8.tgz",
       "dependencies": {}
     },
     "@ax/axunitst-library": {

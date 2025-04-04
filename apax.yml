@@ -11,13 +11,13 @@ description: <Description for your library>
 targets:
   - "1500"
   - llvm
-  - plcsim
 # Install settings
 installStrategy: strict
 apaxVersion: 3.2.1
 # Dependencies
 devDependencies:
   "@ax/sdk": 2411.2.0
+  "@ax/ax2tia": 10.0.8
 dependencies:
   "@ax/system-strings": 8.0.8
 catalogs:
@@ -29,16 +29,30 @@ repository:
 
 # Environment variables
 variables:
+  # an arbitrary directory that can be chosen freely
+  PATH_NAME: "./bin/handover-folder"
+  # you can change the predefined output path where the TIA Portal library will be generated
+  TIA_GLOBAL_LIB_PATH_19: "./md5_v19"
+  TIA_GLOBAL_LIB_PATH_20: "./md5_v20"
+  # set the path to your local TIA Portal installation
+  TIA_INSTALL_PATH_19: "C:\\Program Files\\Siemens\\Automation\\Portal V19"
+  TIA_INSTALL_PATH_20: "C:\\Program Files\\Siemens\\Automation\\Portal V20"
+  # remove, if you do not want to allow debugging of your code
   APAX_BUILD_ARGS:
     - "--debug" # Generate debug information for target "1500"
-  AXUNIT_TARGET_IP: "192.168.0.12"
 
 # Files, which will be shipped with the library
 files:
   - src
 
 scripts:
-  publish-package:
-    - apax pack
-    - apax publish --package *.apax.tgz --registry 'https://npm.pkg.github.com/'
-    - rm *.apax.tgz
+  # transfer a AX Library to handover library documents for a TIA Libray
+  export-tia-handover-documents: ax2tia -i ./bin/1500/*.lib -o "$PATH_NAME"
+  # convert library handover documents into a global library for the TIA Portal.
+  import-handover-documents-to-tia-19: '"$TIA_INSTALL_PATH_19\\bin\\Siemens.Simatic.Lang.Library.Importer.exe" -i "$PATH_NAME" -o "$TIA_GLOBAL_LIB_PATH_19" -u'
+  import-handover-documents-to-tia-20: '"$TIA_INSTALL_PATH_20\\bin\\Siemens.Simatic.Lang.Library.Importer.exe" -i "$PATH_NAME" -o "$TIA_GLOBAL_LIB_PATH_20" -u'
+  create-tialib:
+    - apax build
+    - apax export-tia-handover-documents
+    - apax import-handover-documents-to-tia-19
+    - apax import-handover-documents-to-tia-20
