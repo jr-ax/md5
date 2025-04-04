@@ -11,6 +11,7 @@ description: <Description for your library>
 targets:
   - "1500"
   - llvm
+  - plcsim
 # Install settings
 installStrategy: strict
 apaxVersion: 3.2.1
@@ -26,6 +27,7 @@ catalogs:
 variables:
   APAX_BUILD_ARGS:
     - "--debug" # Generate debug information for target "1500"
+  AXUNIT_TARGET_IP: "192.168.0.12"
 
 # Files, which will be shipped with the library
 files:

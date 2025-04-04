@@ -5,7 +5,7 @@ NAMESPACE hash
     {TestFixture}
     CLASS MyTestFixture
         VAR CONSTANT
-            NUM_TESTS : INT := 27;
+            NUM_TESTS : INT := 28;
         END_VAR
         VAR
             md5 : md5;
@@ -19,6 +19,7 @@ NAMESPACE hash
                 'abcdefghijklmnopqrstuvwxyz', 'c3fcd3d76192e4007dfb496cca67e13b',
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 'd174ab98d277d9f5a5611c2c9f419d9f',
                 '12345678901234567890123456789012345678901234567890123456789012345678901234567890', '57edf4a22be3c955ac49da2e2107b67a',
+                'ikqwerqwperiuizuzweorzuqwzeruzozuwzqo1234912348jklmnopqrstuvwxyz0123456789ABCDEFGHOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012', '925de4f62f605e32535f1b2765f5671a',
 
                 // Edge cases
                 ' ', '7215ee9c7d9dc229d2921a40e899ec5f',                // single space
