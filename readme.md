@@ -1,21 +1,13 @@
-# MD5 Hashing
+# MD5 Hashing TIA Portal library
 
 ## Overview
-This library implements the MD5 hashing algorithm in a PLC-compatible structured text language for Siemens S7-1500 PLCs. The implementation follows the standard MD5 algorithm, processing input strings into 128-bit hash values.
+This library implements the MD5 hashing algorithm in a PLC-compatible structured text language usable in TIA Portal V19 or V20, written in SIMATIC AX for Siemens S7-1500 PLCs. The implementation follows the standard MD5 algorithm, processing input strings into 128-bit hash values.
 
 ## Usage
-1. Call `Hash(InputString := InputText, HashOutput => HashedValue)` with the `inputText` as string to be hashed.
-2. The function returns a 32-character hexadecimal MD5 hash and writes it to `HashedValue`.
-
-```iec-st
-VAR
-    InputText : STRING := 'P@ssw0rd!';  // Example input string
-    HashedValue : STRING;               // Variable to hold the hashed output
-END_VAR
-
-// Call the Hash method to compute the MD5 hash
-Hash(InputString := InputText, HashOutput => HashedValue);
-```
+1. Download the library folder for your TIA Portal version (V19/V20)
+2. Open the library and drag the block 'md5_fb' into your project. Use it in a software unit.
+3. Call it with your string to be hashed as `InputString`
+4. The function returns a 32-character hexadecimal MD5 hash at `HashOutput`.
 
 ## Limitations
 - No built-in error handling
