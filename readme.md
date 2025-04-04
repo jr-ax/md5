@@ -2,6 +2,23 @@
 
 ## Overview
 This library implements the MD5 hashing algorithm in a PLC-compatible structured text language for Siemens S7-1500 PLCs. The implementation follows the standard MD5 algorithm, processing input strings into 128-bit hash values.
+> To use the TIA Portal library generated from this AX library, switch to branch TIAX and see readme.
+
+## Install this package
+
+Enter:
+
+```cli
+apax add @jr-ax/md5
+```
+
+> to install this package you need to login into the GitHub registry. You'll find more information [here](https://github.com/simatic-ax/.github/blob/main/docs/personalaccesstoken.md)
+
+## Namespace
+
+```sh
+hash
+```
 
 ## Usage
 1. Call `Hash(InputString := InputText, HashOutput => HashedValue)` with the `inputText` as string to be hashed.
@@ -11,10 +28,11 @@ This library implements the MD5 hashing algorithm in a PLC-compatible structured
 VAR
     InputText : STRING := 'P@ssw0rd!';  // Example input string
     HashedValue : STRING;               // Variable to hold the hashed output
+    hasher : hash.md5;
 END_VAR
 
 // Call the Hash method to compute the MD5 hash
-Hash(InputString := InputText, HashOutput => HashedValue);
+md5.Hash(InputString := InputText, HashOutput => HashedValue);
 ```
 
 ## Limitations
